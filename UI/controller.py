@@ -11,9 +11,36 @@ class Controller:
         self._listShape = []
 
     def fillDD(self):
-        pass
+        self._listYear=self._model._allYears
+        self._listShape=self._model._allShapes
+        for s in self._listShape:
+            self._view.ddshape.options.append(ft.dropdown.Option(s))
+        for a in self._listYear:
+            self._view.ddyear.options.append(ft.dropdown.Option(a))
+        self._view.update_page()
 
     def handle_graph(self, e):
-        pass
+        a = self._view.ddyear.value
+        s = self._view.ddshape.value
+
+        self._model.buildGraph(a, s)
+        self._view.txt_result.controls.clear()
+        self._view.txt_result.controls.append(ft.Text(
+            f"Numero di vertici: {self._model.getNumNodi()} Numero di archi: {self._model.getNumArchi()}"
+        ))
+        for p in self._model.getSumWeightNeigh():
+            self._view.txt_result.controls.append(ft.Text(f"Nodo {p[0]}, somma pesi su archi ={p[1]}"))
+
+        self._view.update_page()
+
     def handle_path(self, e):
-        pass
+        path, pesoBest = self._model.computePath()
+
+        self._view.txtOut2.controls.append(ft.Text(
+            f"Peso cammino massimo: {pesoBest}"))
+
+        for p in path:
+            self._view.txtOut2.controls.append(ft.Text(
+                f"{p[0].id} --> {p[1].id}: weight {p[2]} distance {str(self._model.get_distance_weight(p))}"))
+
+        self._view.update_page()
