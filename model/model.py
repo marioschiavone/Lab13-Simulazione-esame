@@ -7,7 +7,6 @@ class Model:
     def __init__(self):
 
         self._allYears=DAO.getAllYears()
-        self._allShapes=DAO.getAllShapes()
         self._allStates=DAO.getAllStates()
         self._idMap={}
         for s in self._allStates:
@@ -64,12 +63,13 @@ class Model:
         return distance.geodesic((e[0].Lat, e[0].Lng), (e[1].Lat, e[1].Lng)).km
 
 
-    def buildGraph(self, a, s):
+    def buildGraph(self, a1, a2, xG):
         self._grafo.clear()
         for state in self._allStates:
             self._nodes.append(state)
         self._grafo.add_nodes_from(self._nodes)
-        allWeightedNeigh= DAO.getAllWeightedNeigh(a, s)
+        #allWeightedNeigh= DAO.getAllWeightedNeigh(a, s)
+        allWeightedNeigh = DAO.getAllWeightedNeighV2(a1, a2, xG)
         for n in allWeightedNeigh:
             self._edges.append((self._idMap[n[0]], self._idMap[n[1]], n[2]))
         self._grafo.add_weighted_edges_from(self._edges)
