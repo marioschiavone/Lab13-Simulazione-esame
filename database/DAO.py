@@ -1,4 +1,5 @@
 from database.DB_connect import DBConnect
+from model.sighting import Sighting
 from model.state import State
 
 
@@ -77,6 +78,23 @@ class DAO():
         cursor.execute(query,(anno1, anno2, xG))
         for row in cursor:
             result.append((row["s1"],row["s2"],row["N"]))
+        cursor.close()
+        conn.close()
+        return result
+
+    @staticmethod
+    def getAllSightings(year, shape):
+        conn = DBConnect.get_connection()
+        result = []
+        cursor = conn.cursor(dictionary=True)
+        query = """select *
+                    from sighting s 
+                    where year(s.`datetime`)=%s
+                    and s.shape=%s
+                    order by s.`datetime` asc"""
+        cursor.execute(query,(year, shape,))
+        for row in cursor:
+            result.append(Sighting(**row))
         cursor.close()
         conn.close()
         return result
